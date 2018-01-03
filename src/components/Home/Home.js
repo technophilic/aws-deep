@@ -3,7 +3,7 @@ import QrReader from 'react-qr-reader'
 import {Fab,Snackbar} from 'rmwc'
 import './Home.css'
 import find from 'lodash/indexOf'
-
+import done from './done.svg'
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 class Home extends Component {
     constructor(props){
@@ -13,9 +13,9 @@ class Home extends Component {
             aadhardata:'',
             aadhar:false,
             itemqr:true,
-            cartopen:false,
+            cartopen:true,
             snackbarIsOpen:false,
-            transactionID:'',
+            transactionID:'Z07BSNEWI43',
             success:false,
             delay: 300,
             result: 'No result',
@@ -82,7 +82,7 @@ class Home extends Component {
                         className="qr-container"
                         resolution={800}
                     />
-                    <div className="row" style={{paddingTop:'20px',paddingLeft:'10px',paddingRight:'10px'}}>
+                    <div className="row" style={{position:'absolute',bottom:'10px',width:'100%'}}>
                         <div className="col s6">
                             <Fab>shopping_cart</Fab>
                             <Fab mini style={{pointerEvents:'none',transform:'scale(0.7)translate(-20px,10px)',boxShadow:'none'}}><small style={{fontFamily:"roboto',sans-serif !important"}}>{this.state.cartdata.length}</small></Fab>
@@ -100,15 +100,20 @@ class Home extends Component {
             }
             {this.state.success?
                 <div>
-                    <QrReader
-                        delay={this.state.delay}
-                        onError={this.handleError}
-                        onScan={this.handleScan}
-                        style={{width: '100%'}}
-                        className="qr-container"
-                        resolution={800}
-                    />
-                    <p>{this.state.result}</p>
+                    <div className="row" style={{position:'absolute',top:'50%',left:'50%',transform:'translate(-50%,-50%)',width:'100%'}}>
+                        <div className="col s8 push-s2 m6 push-m3">
+                            <div className="row" style={{width:'70%',margin:'0 auto'}}>
+                                <img src={done} style={{width:'100%',height:'auto'}} alt=""/>
+                            </div>
+                            <div className="row" style={{textAlign:'center'}}>
+                                <h4>Transaction successful</h4>
+                                <h6>ID : {this.state.transactionID}</h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div style={{position:'absolute',bottom:'15px','right':'15px'}}>
+                        <Fab>chevron_right</Fab>
+                    </div>
                 </div> :''
             }
             <Snackbar
