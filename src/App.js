@@ -11,9 +11,11 @@ class App extends Component {
         this.state={
             loading:true,
             login:false,
-            home:false
+            home:false,
+            token:''
         };
         this.logout = this.logout.bind(this);
+        this.getToken = this.getToken.bind(this);
     }
     componentDidMount(){
         let self=this;
@@ -22,17 +24,21 @@ class App extends Component {
             // from the offline store.
             let dispLogin;
             console.log(value);
-            dispLogin = value === null; //true if no data i.e login sectiojn is to be displayed
+            dispLogin = value === null; //true if no data i.e login section is to be displayed
             self.setState({
                 loading:false,
                 login:dispLogin,
-                home:!dispLogin
+                home:!dispLogin,
+                token:(!dispLogin)?value.token:''
             });
         }).catch(function(err) {
             // This code runs if there were any errors
             console.log(err);
         });
 
+    }
+    getToken(){
+        return this.state.token;
     }
     logout(){
         let self=this;
@@ -66,7 +72,7 @@ class App extends Component {
                     }/>:''
                 }
                 {
-                    this.state.home? <Home  onLogout={this.logout}/>:''
+                    this.state.home? <Home getToken={this.getToken} onLogout={this.logout}/>:''
                 }
             </div>
         );

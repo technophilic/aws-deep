@@ -24,11 +24,12 @@ class Home extends Component {
             cartdata:[],
             aadhardata:'',
             aadhar:false,
-            itemqr:false,
+            itemqr:true,
             cartopen:false,
             snackbarIsOpen:false,
             transactionID:'Z07BSNEWI43',
-            success:true,
+            complaints:false,
+            success:false,
             tempOpen:false,
             delay: 300,
             result: 'No result',
@@ -38,7 +39,7 @@ class Home extends Component {
 
         this.handleScan = this.handleScan.bind(this);
         this.logout = this.logout.bind(this,props.onLogout);
-        this.sendData = this.sendData.bind(this);
+        this.sendData = this.sendData.bind(this,props.getToken);
         this.reset = this.reset.bind(this);
     }
     logout(cb){
@@ -58,7 +59,7 @@ class Home extends Component {
                     itemqr:true
                 });
             }
-            if(this.state.itemqr){
+            else if(this.state.itemqr){
                 let cartDat=this.state.cartdata;
                 let search=find(cartDat,data);
                 console.log(find,search);
@@ -72,7 +73,6 @@ class Home extends Component {
                     });
                     console.log(this.state.cartdata);
                 }
-
             }
         }
     }
@@ -94,8 +94,13 @@ class Home extends Component {
             result: 'No result',
         });
     }
-    sendData(){
-
+    sendData(token){
+        console.log('sending data !');
+        console.log({
+            token:token(),
+            aadhar:this.state.aadhardata,
+            items:this.state.cartdata
+        });
     }
     render(){
         return(
@@ -163,14 +168,14 @@ class Home extends Component {
                     </div>
                     <div className="row" style={{position:'absolute',bottom:'10px',width:'100%'}}>
                         <div className="col s4">
-                            <Fab>clear</Fab>
+                            <Fab onClick={this.reset}>clear</Fab>
                         </div>
                         <div className="col s4" style={{textAlign:'center'}}>
                             <Fab>shopping_cart</Fab>
                             <Fab mini style={{pointerEvents:'none',transform:'scale(0.7)translate(-20px,30px)',boxShadow:'none',position:'absolute'}}><small style={{fontFamily:"roboto',sans-serif !important"}}>{this.state.cartdata.length}</small></Fab>
                         </div>
                         <div className="col s4" style={{textAlign:'right'}}>
-                            <Fab>check</Fab>
+                            <Fab onClick={this.sendData}>check</Fab>
                         </div>
                     </div>
                 </div> :''
