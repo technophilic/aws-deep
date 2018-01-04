@@ -1,17 +1,50 @@
 import React, {Component} from 'react';
 import './Login.css';
 import {FormField, TextField, Grid, GridCell, Button, Card, Icon} from 'rmwc';
-
+import db from '../../database'
+import logo from './icon.png'
 class Login extends Component {
     constructor(props) {
         super(props);
+        this.state={
+            id:'',
+            password:''
+        };
+        this.login = this.login.bind(this,props.onLogin);
+        this.store = this.store.bind(this);
     }
+    login(cb){
+        let self=this;
+        let formData = new FormData();
 
+        formData.append("uid",this.state.id);
+        formData.append("password",this.state.password);
+
+        let xhr=new XMLHttpRequest();
+        xhr.open('POST','https://subconn.herokuapp.com/agent/login',true);
+        xhr.onload=function () {
+            console.log(xhr.responseText);
+            self.store(xhr.responseText);
+            cb();
+        };
+        xhr.send(formData);
+    }
+    store(data){
+        let x=JSON.parse(data);
+        db.setItem('agent', x).then(function (value) {
+            // Do other things once the value has been saved.
+            console.log('Logged in and stored in db');
+            console.log(value);
+        }).catch(function(err) {
+            // This code runs if there were any errors
+            console.log(err);
+        });
+    }
     render() {
         return (
             <div>
                 <h1 style={{'textAlign':'center'}}>
-                    <Icon style={{'fontSize':'100px'}}>store_mall_directory</Icon>
+                    <img src={logo} style={{height:'auto',width:'100px'}} alt=""/>
                 </h1>
                 <h1 style={{'textAlign':'center'}}>
                     Subconn - Login
@@ -22,21 +55,16 @@ class Login extends Component {
                             <Grid>
                                 <GridCell span="12">
                                     <FormField className="form-field">
-                                        <TextField label="Agent ID" id="agent" className="text-field"/>
+                                        <TextField label="Aadhar ID" id="aadhar" className="text-field" value={this.state.id} onChange={event => this.setState({id: event.target.value})}/>
                                     </FormField>
                                 </GridCell>
                                 <GridCell span="12">
                                     <FormField className="form-field">
-                                        <TextField label="Aadhar ID" id="aadhar" className="text-field"/>
+                                        <TextField label="Password" id="agent" type="password" className="text-field" value={this.state.password} onChange={event => this.setState({password: event.target.value})}/>
                                     </FormField>
                                 </GridCell>
                                 <GridCell span="12">
-                                    <FormField className="form-field">
-                                        <TextField label="Password" id="agent" type="password" className="text-field"/>
-                                    </FormField>
-                                </GridCell>
-                                <GridCell span="12">
-                                    <Button raised>Login</Button>
+                                    <Button raised onClick={this.login} style={{ backgroundColor: '#ff4081',color:'white' }}>Login</Button>
                                 </GridCell>
                             </Grid>
                         </Card>

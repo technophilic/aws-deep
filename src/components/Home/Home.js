@@ -1,6 +1,18 @@
 import React, { Component } from 'react'
 import QrReader from 'react-qr-reader'
-import {Fab,Snackbar} from 'rmwc'
+import {Fab,
+    Snackbar,
+    Toolbar,
+    TemporaryDrawer,
+    TemporaryDrawerHeader,
+    TemporaryDrawerContent,
+    ToolbarSection,
+    ToolbarTitle,
+    ToolbarMenuIcon,
+    List,
+    ListItem,
+    ListItemText,
+    ListItemStartDetail} from 'rmwc'
 import './Home.css'
 import find from 'lodash/indexOf'
 import done from './done.svg'
@@ -12,15 +24,27 @@ class Home extends Component {
             cartdata:[],
             aadhardata:'',
             aadhar:false,
-            itemqr:true,
-            cartopen:true,
+            itemqr:false,
+            cartopen:false,
             snackbarIsOpen:false,
             transactionID:'Z07BSNEWI43',
-            success:false,
+            success:true,
+            tempOpen:false,
             delay: 300,
             result: 'No result',
         };
+        console.log(props);
+
+
         this.handleScan = this.handleScan.bind(this);
+        this.logout = this.logout.bind(this,props.onLogout);
+        this.sendData = this.sendData.bind(this);
+        this.reset = this.reset.bind(this);
+    }
+    logout(cb){
+        this.reset();
+        console.log('local logout called !');
+        cb();
     }
     handleScan(data){
         if(data){
@@ -55,9 +79,60 @@ class Home extends Component {
     handleError(err){
         console.error(err)
     }
+    reset(){
+        this.setState({
+            cartdata:[],
+            aadhardata:'',
+            aadhar:true,
+            itemqr:false,
+            cartopen:false,
+            snackbarIsOpen:false,
+            transactionID:'',
+            success:false,
+            tempOpen:false,
+            delay: 300,
+            result: 'No result',
+        });
+    }
+    sendData(){
+
+    }
     render(){
         return(
         <div>
+            {/* With multiple sections */}
+            <Toolbar style={{backgroundColor:'#ff4081'}}>
+                <ToolbarSection alignStart>
+                    <ToolbarMenuIcon use="menu" onClick={() => this.setState({tempOpen: !this.state.tempOpen})}/>
+                    <ToolbarTitle>SubConn</ToolbarTitle>
+                </ToolbarSection>
+            </Toolbar>
+            <TemporaryDrawer
+                open={this.state.tempOpen}
+                onClose={() => this.setState({tempOpen: false})}
+            >
+                <TemporaryDrawerHeader style={{ backgroundColor: '#ff4081',color:'white' }}>
+                    Menu
+                </TemporaryDrawerHeader>
+                <TemporaryDrawerContent>
+                    <ListItem onClick={this.reset}>
+                        <ListItemStartDetail>home</ListItemStartDetail>
+                        <ListItemText>Home</ListItemText>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemStartDetail>compare_arrows</ListItemStartDetail>
+                        <ListItemText>Transaction History</ListItemText>
+                    </ListItem>
+                    <ListItem>
+                        <ListItemStartDetail>warning</ListItemStartDetail>
+                        <ListItemText>Complaints</ListItemText>
+                    </ListItem>
+                    <ListItem onClick={this.logout}>
+                        <ListItemStartDetail>input</ListItemStartDetail>
+                        <ListItemText>Logout</ListItemText>
+                    </ListItem>
+                </TemporaryDrawerContent>
+            </TemporaryDrawer>
             {this.state.aadhar?
                 <div>
                     <QrReader
@@ -68,8 +143,9 @@ class Home extends Component {
                         className="qr-container"
                         resolution={800}
                     />
-                    <h4 style={{textAlign:'center'}}>Scan aadhar card .</h4>
-                    <p>Data : {this.state.aadhardata}</p>
+                    <div className="row">
+                        <h4 style={{textAlign:'center'}}>Scan aadhar card of customer</h4>
+                    </div>
                 </div>:''
             }
             {this.state.itemqr?
@@ -82,12 +158,18 @@ class Home extends Component {
                         className="qr-container"
                         resolution={800}
                     />
+                    <div className="row">
+                        <h4 style={{textAlign:'center'}}>Scan Qr code of the items</h4>
+                    </div>
                     <div className="row" style={{position:'absolute',bottom:'10px',width:'100%'}}>
-                        <div className="col s6">
-                            <Fab>shopping_cart</Fab>
-                            <Fab mini style={{pointerEvents:'none',transform:'scale(0.7)translate(-20px,10px)',boxShadow:'none'}}><small style={{fontFamily:"roboto',sans-serif !important"}}>{this.state.cartdata.length}</small></Fab>
+                        <div className="col s4">
+                            <Fab>clear</Fab>
                         </div>
-                        <div className="col s6" style={{textAlign:'right'}}>
+                        <div className="col s4" style={{textAlign:'center'}}>
+                            <Fab>shopping_cart</Fab>
+                            <Fab mini style={{pointerEvents:'none',transform:'scale(0.7)translate(-20px,30px)',boxShadow:'none',position:'absolute'}}><small style={{fontFamily:"roboto',sans-serif !important"}}>{this.state.cartdata.length}</small></Fab>
+                        </div>
+                        <div className="col s4" style={{textAlign:'right'}}>
                             <Fab>check</Fab>
                         </div>
                     </div>
@@ -112,7 +194,7 @@ class Home extends Component {
                         </div>
                     </div>
                     <div style={{position:'absolute',bottom:'15px','right':'15px'}}>
-                        <Fab>chevron_right</Fab>
+                        <Fab onClick={this.reset}>check</Fab>
                     </div>
                 </div> :''
             }
