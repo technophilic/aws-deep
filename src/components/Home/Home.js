@@ -131,7 +131,6 @@ class Home extends Component {
             cartopen:false,
             snackbarIsOpen:false,
             loading:false,
-            transactionID:'',
             complaints:false,
             inventory:false,
             success:false,
