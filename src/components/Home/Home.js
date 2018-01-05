@@ -164,7 +164,7 @@ class Home extends Component {
 
             let xhr=new XMLHttpRequest();
             xhr.open('POST','https://subconn.herokuapp.com/transaction/aadhar',true);
-            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+            // xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.onload=function () {
                 console.log(xhr.responseText);
                 self.setState({
