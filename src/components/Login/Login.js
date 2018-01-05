@@ -24,21 +24,24 @@ class Login extends Component {
         xhr.open('POST','https://subconn.herokuapp.com/agent/login',true);
         xhr.onload=function () {
             console.log(xhr.responseText);
-            self.store(xhr.responseText);
-            cb();
+            self.store(xhr.responseText,cb);
         };
         xhr.send(formData);
     }
-    store(data){
+    store(data,cb){
         let x=JSON.parse(data);
-        db.setItem('agent', x).then(function (value) {
-            // Do other things once the value has been saved.
-            console.log('Logged in and stored in db');
-            console.log(value);
-        }).catch(function(err) {
-            // This code runs if there were any errors
-            console.log(err);
-        });
+        if(x.status==="200"){
+            db.setItem('agent', x).then(function (value) {
+                // Do other things once the value has been saved.
+                console.log('Logged in and stored in db');
+                console.log(value);
+                cb(x.token);
+            }).catch(function(err) {
+                // This code runs if there were any errors
+                console.log(err);
+            });
+        }
+
     }
     render() {
         return (

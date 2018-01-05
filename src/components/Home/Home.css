@@ -3,3 +3,17 @@
     box-shadow: none !important;
     border: 10px dashed rgba(0, 0, 0, 0.6) !important;
 }*/
+.inv-cols{
+    text-align: center;
+}
+.mdc-text-field.mdc-text-field--textarea.mdc-text-field--fullwidth.mdc-text-field--focused  .mdc-text-field__input,
+.mdc-text-field.mdc-text-field--textarea.mdc-text-field--fullwidth.mdc-text-field--focused
+{
+    border-color: #ff4081 !important;
+}
+.disabled{
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+    opacity: 0.6;
+    pointer-events: none;
+}
