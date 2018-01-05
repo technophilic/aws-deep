@@ -27,6 +27,7 @@ import './Home.css'
 import find from 'lodash/indexOf'
 import done from './done.svg'
 import Loading from '../Loading/Loading'
+import trans from '../../sample'
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
 class Home extends Component {
     constructor(props){
@@ -42,7 +43,7 @@ class Home extends Component {
             cartopen:false,
             snackbarIsOpen:false,
             loading:false,
-            transactionID:'',
+            transactionID:trans,
             complaints:false,
             inventory:false,
             success:false,
@@ -142,31 +143,44 @@ class Home extends Component {
     }
     sendData(token){
         let self=this;
-        let formData = new FormData();
+        // let formData = new FormData();
         navigator.geolocation.getCurrentPosition(function (position) {
             let location = {
                 lat: position.coords.latitude,
                 lng: position.coords.longitude
             };
-            formData.append("token",token());
+            /*formData.append("token",token());
             formData.append("xml_data",self.state.aadhardata);
             formData.append("gps",JSON.stringify(location));
-            formData.append("items",JSON.stringify(self.state.cartdata));
+            formData.append("items",JSON.stringify(self.state.cartdata));*/
 
             console.log('sending data !');
-            console.log({
+            let data ={
                 token:token(),
                 xml_data:self.state.aadhardata,
                 items:self.state.cartdata,
                 gps:location
-            });
+            };
 
             let xhr=new XMLHttpRequest();
             xhr.open('POST','https://subconn.herokuapp.com/transaction/aadhar',true);
+            xhr.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
             xhr.onload=function () {
                 console.log(xhr.responseText);
+                self.setState({
+                    aadhar:false,
+                    itemqr:false,
+                    cartopen:false,
+                    complaints:false,
+                    inventory:false,
+                    tempOpen:false,
+                    success:true,
+                    loading:false
+                });
             };
-            xhr.send(formData);
+            xhr.send(JSON.stringify(data));
+
+            console.log(data);
         });
     }
     getInventory(token){
