@@ -11,9 +11,9 @@ class App extends Component {
         super(props);
         console.log(db);
         this.state={
-            loading:true,
+            // loading:true,
             login:false,
-            home:false,
+            home:true,
             tempOpen:false,
             notif:'',
             token:'',
@@ -22,7 +22,7 @@ class App extends Component {
         this.logout = this.logout.bind(this);
         this.getToken = this.getToken.bind(this);
     }
-    componentDidMount(){
+    /*componentDidMount(){
         let self=this;
         db.getItem('agent').then(function(value) {
             // This code runs once the value has been loaded
@@ -41,7 +41,7 @@ class App extends Component {
             console.log(err);
         });
 
-    }
+    }*/
     getToken(){
         return this.state.token;
     }

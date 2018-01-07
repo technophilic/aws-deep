@@ -67,7 +67,7 @@ class Login extends Component {
                                     </FormField>
                                 </GridCell>
                                 <GridCell span="12">
-                                    <Button raised onClick={this.login} style={{ backgroundColor: '#ff4081',color:'white' }}>Login</Button>
+                                    <Button raised onClick={this.login} style={{ backgroundColor: '#388e3c',color:'white' }}>Login</Button>
                                 </GridCell>
                             </Grid>
                         </Card>

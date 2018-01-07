@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import QrReader from 'react-qr-reader'
+import Webcam from 'react-webcam';
 import {Fab,
     Snackbar,
     Toolbar,
@@ -10,6 +11,8 @@ import {Fab,
     ToolbarTitle,
     ToolbarMenuIcon,
     List,
+    Button,
+    Icon,
     TextField,
     ListItem,
     ListItemText,
@@ -22,10 +25,22 @@ import {Fab,
     DialogBody,
     DialogFooter,
     DialogFooterButton,
-    DialogBackdrop} from 'rmwc'
+    DialogBackdrop,
+    GridList,
+    GridTile,
+    GridTilePrimary,
+    GridTilePrimaryContent,
+    GridTileSecondary,
+    GridTileTitle,
+    Card,
+    CardPrimary,
+    CardTitle,
+    CardSubtitle,
+} from 'rmwc'
 import './Home.css'
 import find from 'lodash/indexOf'
 import done from './done.svg'
+import weather from './weather.png'
 import Loading from '../Loading/Loading'
 import trans from '../../sample'
 navigator.vibrate = navigator.vibrate || navigator.webkitVibrate || navigator.mozVibrate || navigator.msVibrate;
@@ -54,8 +69,6 @@ class Home extends Component {
         };
         console.log(props);
 
-
-        this.handleScan = this.handleScan.bind(this);
         this.logout = this.logout.bind(this,props.onLogout);
         this.sendData = this.sendData.bind(this,props.getToken);
         this.sendComplaint = this.sendComplaint.bind(this,props.getToken);
@@ -81,41 +94,41 @@ class Home extends Component {
             loading:true
         });
     }
-    handleScan(data){
-        if(data){
-            if (navigator.vibrate) {
-                navigator.vibrate(300);
-            }
-            if(this.state.aadhar){
-                this.setState({
-                    aadhardata:data,
-                    aadhar:false,
-                    itemqr:true
-                });
-            }
-            else if(this.state.itemqr){
-                let cartDat=this.state.cartdata;
-                let search=find(cartDat,data);
-                console.log(find,search);
-                if(search!==-1){
-                    this.setState({snackbarIsOpen: true})
-                }
-                else{
-                    cartDat.push(data);
-                    this.setState({
-                        cartdata:cartDat
-                    });
-                    console.log(this.state.cartdata);
-                }
-            }
-            else if(this.state.complaints){
-                this.setState({
-                   complaintqr:data
-                });
-                console.log(data);
-            }
-        }
-    }
+    // handleScan(data){
+    //     if(data){
+    //         if (navigator.vibrate) {
+    //             navigator.vibrate(300);
+    //         }
+    //         if(this.state.aadhar){
+    //             this.setState({
+    //                 aadhardata:data,
+    //                 aadhar:false,
+    //                 itemqr:true
+    //             });
+    //         }
+    //         else if(this.state.itemqr){
+    //             let cartDat=this.state.cartdata;
+    //             let search=find(cartDat,data);
+    //             console.log(find,search);
+    //             if(search!==-1){
+    //                 this.setState({snackbarIsOpen: true})
+    //             }
+    //             else{
+    //                 cartDat.push(data);
+    //                 this.setState({
+    //                     cartdata:cartDat
+    //                 });
+    //                 console.log(this.state.cartdata);
+    //             }
+    //         }
+    //         else if(this.state.complaints){
+    //             this.setState({
+    //                complaintqr:data
+    //             });
+    //             console.log(data);
+    //         }
+    //     }
+    // }
     handleError(err){
         console.error(err)
     }
@@ -182,6 +195,13 @@ class Home extends Component {
             console.log(data);
         });
     }
+    setRef = (webcam) => {
+        this.webcam = webcam;
+    };
+
+    capture = () => {
+        const imageSrc = this.webcam.getScreenshot();
+    };
     getInventory(token){
         let self=this;
         let formData = new FormData();
@@ -268,7 +288,7 @@ class Home extends Component {
         return(
         <div>
             {/* With multiple sections */}
-            <Toolbar style={{backgroundColor:'#ff4081'}}>
+            <Toolbar style={{backgroundColor:'#388e3c'}}>
                 <ToolbarSection alignStart>
                     <ToolbarMenuIcon use="menu" onClick={() => this.setState({tempOpen: !this.state.tempOpen})}/>
                     <ToolbarTitle>SubConn</ToolbarTitle>
@@ -278,21 +298,36 @@ class Home extends Component {
                 open={this.state.tempOpen}
                 onClose={() => this.setState({tempOpen: false})}
             >
-                <TemporaryDrawerHeader style={{ backgroundColor: '#ff4081',color:'white' }}>
+                <TemporaryDrawerHeader style={{ backgroundColor: '#388e3c',color:'white' }}>
                     Menu
                 </TemporaryDrawerHeader>
                 <TemporaryDrawerContent>
                     <ListItem onClick={this.reset}>
-                        <ListItemStartDetail>home</ListItemStartDetail>
-                        <ListItemText>Home</ListItemText>
+                        <ListItemStartDetail>dashboard</ListItemStartDetail>
+                        <ListItemText>Dashboard</ListItemText>
+                    </ListItem>
+                    <ListItem onClick={()=>{
+                        this.setState({
+                            aadhar:false,
+                            itemqr:true,
+                            cartopen:false,
+                            complaints:false,
+                            inventory:false,
+                            tempOpen:false,
+                            success:false,
+                            loading:false
+                        });
+                    }}>
+                        <ListItemStartDetail>add</ListItemStartDetail>
+                        <ListItemText>Add Crop</ListItemText>
                     </ListItem>
                     <ListItem onClick={this.getInventory}>
-                        <ListItemStartDetail>store</ListItemStartDetail>
-                        <ListItemText>Inventory</ListItemText>
+                        <ListItemStartDetail>timeline</ListItemStartDetail>
+                        <ListItemText>Timeline</ListItemText>
                     </ListItem>
                     <ListItem onClick={this.complaints}>
-                        <ListItemStartDetail>warning</ListItemStartDetail>
-                        <ListItemText>Complaints</ListItemText>
+                        <ListItemStartDetail>contact_phone</ListItemStartDetail>
+                        <ListItemText>Contact us</ListItemText>
                     </ListItem>
                     <ListItem onClick={this.logout}>
                         <ListItemStartDetail>input</ListItemStartDetail>
@@ -304,7 +339,7 @@ class Home extends Component {
                 open={this.state.cartopen}
                 onClose={evt => this.setState({cartopen: false})}
             >
-                <DialogRoot style={{ backgroundColor: '#ff4081'}}>
+                <DialogRoot style={{ backgroundColor: '#388e3c'}}>
                     <DialogSurface>
                         <DialogHeader>
                             <DialogHeaderTitle style={{textAlign:'center'}}><h3>Cart</h3></DialogHeaderTitle>
@@ -332,44 +367,84 @@ class Home extends Component {
             </Dialog>
             {this.state.aadhar?
                 <div>
-                    <QrReader
-                        delay={this.state.delay}
-                        onError={this.handleError}
-                        onScan={this.handleScan}
-                        style={{width: '100%'}}
-                        className="qr-container"
-                        resolution={800}
-                    />
+                    <h2 style={{textAlign:'center'}}>Dashboard</h2>
                     <div className="row">
-                        <h4 style={{textAlign:'center'}}>Scan aadhar card of customer</h4>
+                        <h3 style={{textAlign:'center'}}>Weather forecast</h3>
+                        <Card style={{width: '320px',position:'relative',margin:'5px auto'}}>
+                            <CardPrimary>
+                                <CardTitle large>32c</CardTitle>
+                                <CardSubtitle>Wednesday <br/> Humidity - 53%</CardSubtitle>
+                            </CardPrimary>
+                            <img src={weather} alt="" style={{float:'right',height:'64px',width:'64px',position:'absolute',top:'5px',right:'10px'}}/>
+                        </Card>
+                        <Card style={{width: '320px',position:'relative',margin:'5px auto'}}>
+                            <CardPrimary>
+                                <CardTitle large>32c</CardTitle>
+                                <CardSubtitle>Wednesday <br/> Humidity - 53%</CardSubtitle>
+                            </CardPrimary>
+                            <img src={weather} alt="" style={{float:'right',height:'64px',width:'64px',position:'absolute',top:'5px',right:'10px'}}/>
+                        </Card>
+                        <Card style={{width: '320px',position:'relative',margin:'5px auto'}}>
+                            <CardPrimary>
+                                <CardTitle large>32c</CardTitle>
+                                <CardSubtitle>Wednesday <br/> Humidity - 53%</CardSubtitle>
+                            </CardPrimary>
+                            <img src={weather} alt="" style={{float:'right',height:'64px',width:'64px',position:'absolute',top:'5px',right:'10px'}}/>
+                        </Card>
+                    </div>
+                    <div className="row">
+                        <h3 style={{textAlign:'center'}}>My crops</h3>
+                        <GridList
+                            tileGutter1={this.state.tileGutter1}
+                            headerCaption={this.state.headerCaption}
+                            twolineCaption={this.state.twolineCaption}
+                            withIconAlignStart={this.state.withIconAlignStart}
+                            tileAspect={this.state.tileAspect}
+                        >
+                            <GridTile >
+                                <GridTilePrimary>
+                                    <GridTilePrimaryContent>
+                                        <img src="https://material-components-web.appspot.com/images/1-1.jpg" alt="test" />
+                                    </GridTilePrimaryContent>
+                                </GridTilePrimary>
+                                <GridTileSecondary>
+                                    <GridTileTitle></GridTileTitle>
+                                </GridTileSecondary>
+                            </GridTile>
+                            <GridTile >
+                                <GridTilePrimary>
+                                    <GridTilePrimaryContent>
+                                        <img src="https://material-components-web.appspot.com/images/1-1.jpg" alt="test" />
+                                    </GridTilePrimaryContent>
+                                </GridTilePrimary>
+                                <GridTileSecondary>
+                                    <GridTileTitle></GridTileTitle>
+                                </GridTileSecondary>
+                            </GridTile>
+                        </GridList>
                     </div>
                 </div>:''
             }
             {this.state.loading?<Loading/>:''}
             {this.state.itemqr?
                 <div>
-                    <QrReader
-                        delay={this.state.delay}
-                        onError={this.handleError}
-                        onScan={this.handleScan}
-                        style={{width: '100%'}}
-                        className="qr-container"
-                        resolution={800}
-                    />
-                    <div className="row" style={{marginBottom:'70px'}}>
-                        <h4 style={{textAlign:'center'}}>Scan Qr code of the items</h4>
-                    </div>
-                    <div className="row" style={{position:'fixed',bottom:'10px',width:'100%'}}>
-                        <div className="col s4">
-                            <Fab onClick={this.reset}>clear</Fab>
+                    <div>
+                        <Webcam
+                            audio={false}
+                            height={'100%'}
+                            ref={this.setRef}
+                            screenshotFormat="image/jpeg"
+                            width={'100%'}
+                        />
+                        <div className="row" style={{marginTop:'15px'}}>
+                            <div className="col s6" style={{textAlign:'center'}}>
+                                <Button dense><Icon>camera</Icon></Button>
+                            </div>
+                            <div className="col s6" style={{textAlign:'center'}}>
+                                <Button type="file" dense><Icon>file_upload</Icon></Button>
+                            </div>
                         </div>
-                        <div className="col s4" style={{textAlign:'center'}}>
-                            <Fab onClick={evt => this.setState({cartopen: true})}>shopping_cart</Fab>
-                            <Fab mini style={{pointerEvents:'none',transform:'scale(0.7)translate(-20px,30px)',boxShadow:'none',position:'absolute'}}><small style={{fontFamily:"roboto',sans-serif !important"}}>{this.state.cartdata.length}</small></Fab>
-                        </div>
-                        <div className="col s4" style={{textAlign:'right'}}>
-                            <Fab onClick={this.sendData}>check</Fab>
-                        </div>
+
                     </div>
                 </div> :''
             }
@@ -396,26 +471,7 @@ class Home extends Component {
             }
             {this.state.complaints?
                 <div>
-                    <QrReader
-                        delay={this.state.delay}
-                        onError={this.handleError}
-                        onScan={this.handleScan}
-                        style={{width: '100%'}}
-                        className="qr-container"
-                        resolution={800}
-                    />
-                    <div className="row">
-                        <h5 style={{textAlign:'center'}}>Scan your product to register complaint.</h5>
-                    </div>
-                    <div className="row" style={{marginTop:'10px'}}>
-                        <div className="col s10 push-s1">
-                            <p><b>Product :</b>{this.state.complaintqr}</p>
-                            <TextField className={(this.state.complaintqr)?'':'disabled'} textarea fullwidth label="Enter your complaint" rows="4" value={this.state.complainttext} onChange={event => this.setState({complainttext: event.target.value})}/>
-                        </div>
-                    </div>
-                    <div style={{textAlign:'right',marginRight:'15px',marginBottom:'15px'}}>
-                        <Fab className={(this.state.complaintqr)?'':'disabled'} onClick={this.sendComplaint}>check</Fab>
-                    </div>
+
                 </div>:''
             }
             {this.state.success?
